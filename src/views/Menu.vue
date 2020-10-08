@@ -2,7 +2,7 @@
     <div>
         <div class="title">The Vehicular Epic</div>
         <div class="menu">
-            <MenuButton text="New Game" color="red" />
+            <MenuButton @click="state(1)" text="New Game" color="red" />
             <MenuButton text="Options" color="green" />
             <MenuButton text="Credits" color="blue" />
         </div>
@@ -14,10 +14,15 @@
 import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 
+import { State } from '@/modules/web-game'
 import MenuButton from '@/components/MenuButton.vue'
 
 @Component({ components: { MenuButton } })
 export default class Menu extends Vue {
+
+    private state(state: State): void {
+        this.$game.state = state;
+    }
 
 }
 </script>

@@ -12,6 +12,10 @@ export class WebGame {
         return this._state;
     }
 
+    public set state(state: State) {
+        this._state = state;
+    }
+
 }
 
 export default new WebGame();
