@@ -1,6 +1,7 @@
 <template>
     <div>
         <Menu v-if="$game.state === 0" />
+        <canvas ref="canvas" />
     </div>
 </template>
 
@@ -15,3 +16,13 @@ export default class App extends Vue {
 
 }
 </script>
+
+<style lang="scss" scoped>
+canvas {
+    top: 0px;
+    z-index: -1;
+    width: 100vw;
+    height: 100vh;
+    position: absolute;
+}
+</style>
