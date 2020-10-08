@@ -15,3 +15,5 @@ jobs:
           npm run build
       - name: Deploy
         run: bash deploy.sh
+        env:
+          DEPLOY_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
