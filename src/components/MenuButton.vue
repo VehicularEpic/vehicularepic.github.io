@@ -1,5 +1,9 @@
 <template>
-    <button :style="{ '--button-color': color }" v-text="text"></button>
+    <button
+        @click="$emit('click')"
+        :style="{ '--button-color': color }"
+        v-text="text"
+    ></button>
 </template>
 
 <script lang="ts">
