@@ -31,13 +31,13 @@ export default class Menu extends Vue {
 
 div {
     .title {
-        font-size: 96px;
+        font-size: 8vw;
         text-align: center;
         font-family: Impact, Haettenschweiler, "Arial Narrow Bold", sans-serif;
     }
 
     .menu {
-        bottom: 200px;
+        bottom: 20vh;
         position: absolute;
     }
 }
