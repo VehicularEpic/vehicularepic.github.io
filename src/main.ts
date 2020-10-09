@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import App from './App.vue'
 
-import WebGame from '@/modules/web-game'
-const game = Vue.observable(WebGame);
+import { WebGame } from '@/modules/web-game'
+const game = Vue.observable(new WebGame());
 
 Vue.config.productionTip = false;
 

@@ -46,5 +46,3 @@ export class WebGame {
     }
 
 }
-
-export default new WebGame();
