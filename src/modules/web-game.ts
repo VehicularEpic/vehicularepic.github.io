@@ -1,13 +1,17 @@
 var handle: number = 0;
 var GL: WebGL2RenderingContext;
 
+async function initialize() {
+
+}
+
 function handler(game: WebGame) {
     function update() {
         handle = window.requestAnimationFrame(update);
     }
 
     if (handle === 0) {
-        update();
+        initialize().then(update);
     }
 }
 
