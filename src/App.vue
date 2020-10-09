@@ -14,6 +14,12 @@ import Menu from '@/views/Menu.vue'
 @Component({ components: { Menu } })
 export default class App extends Vue {
 
+    private mounted(): void {
+        const canvas = this.$refs['canvas'] as HTMLCanvasElement;
+        this.$game.context = canvas.getContext('webgl2') as WebGL2RenderingContext;
+        this.$game.start();
+    }
+
 }
 </script>
 
