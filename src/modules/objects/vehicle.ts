@@ -1,4 +1,5 @@
 import Wheel from './wheel'
+import Entity from './entity'
 
 import { MatrixUtils } from '@/modules/utils/utils'
 import { ShaderProgram, Model } from '@/modules/web-game'
@@ -8,14 +9,6 @@ export default class Vehicle {
     private readonly name: string;
     private readonly model: Model;
     private readonly wheels: Wheel[] = [];
-
-    public x: number = 0;
-    public y: number = 0;
-    public z: number = 0;
-
-    public xz: number = 0;
-    public zy: number = 0;
-    public xy: number = 0;
 
     constructor(
         name: string,
@@ -39,10 +32,10 @@ export default class Vehicle {
             );
     }
 
-    public render(shader: ShaderProgram): void {
+    public render(shader: ShaderProgram, entity: Entity): void {
         const matrix = MatrixUtils.transformation(
-            this.x, this.y, this.z,
-            this.xz, this.zy, this.xy
+            entity.x, entity.y, entity.z,
+            entity.xz, entity.zy, entity.xy
         );
 
         shader.uniformMatrix4fv('model', matrix);

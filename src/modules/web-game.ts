@@ -1,5 +1,6 @@
 import { mat4 } from 'gl-matrix'
 
+import Entity from './objects/entity'
 import Vehicle from './objects/vehicle'
 import { MatrixUtils } from './utils/utils'
 import ModelFactory from './factory/model-factory'
@@ -7,6 +8,10 @@ import ModelFactory from './factory/model-factory'
 var handle: number = 0;
 var GL: WebGL2RenderingContext;
 var shader: ShaderProgram;
+
+const player = new Entity();
+player.y = -1.0;
+player.z = 10.0;
 
 const files: string[] = [
     'drags'
@@ -58,9 +63,7 @@ function handler(game: WebGame) {
 
             if (game.state === State.CARS) {
                 const vehicle = (vehicles.get('drags') as Vehicle);
-                vehicle.xz += 0.01;
-                vehicle.y = -1.0;
-                vehicle.z = 10.0;
+                player.xz += 0.01;
 
                 shader.use();
                 shader.uniformMatrix4fv('projection', matrix);
@@ -68,7 +71,7 @@ function handler(game: WebGame) {
                     MatrixUtils.lookAt(0.0, -4.0, 20.0, 0.0, 0.0, 0.0));
 
                 shader.uniform3f('u_LightPos', 0.0, 15.0, -10.0);
-                vehicle.render(shader);
+                vehicle.render(shader, player);
             }
         }
     }
