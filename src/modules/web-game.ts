@@ -13,10 +13,21 @@ const player = new Entity();
 player.y = -1.0;
 player.z = 10.0;
 
-const files: string[] = [
+const vehicles: string[] = [
     'drags'
 ];
-const vehicles: Map<string, Vehicle> = new Map();
+
+const models: string[] = [
+    'prod', 'prodw', 'prodb2', 'prodb1', 'prodt', 'drod', 'grod', 'drodt', 'nrod', 'nrodt',
+    'mixpd', 'mixnd', 'mixpn', 'prode', 'drode', 'pipg', 'prmp', 'prmpc', 'prmpg', 'prmpm',
+    'prmpw', 'prmpb', 'prmps', 'dbmp', 'drmpb', 'drmps', 'pipe', 'spikes', 'rail', 'brdr',
+    'chk', 'fix', 'dchk', 'drodb', 'drodbb', 'bprmpup', 'prmpup', 'start', 'wall', 'fenc',
+    'prmpl', 'net', 'prmpspd', 'drmpg', 'tiny', 'dhil', 'stunl', 'tunl', 'lift', 'mountn',
+    'mass', 'cres', 'pile1', 'pile2', 'brdr2', 'tre1', 'tre2', 'tre3', 'tre4', 'tre5',
+    'tre6', 'tre7', 'tre8', 'cac1', 'cac2', 'cac3', 'blok', 'full', 'pyrmd', 'tub'
+];
+
+const Vehicles: Map<string, Vehicle> = new Map();
 
 async function initialize() {
     window.addEventListener('resize', () => {
@@ -39,12 +50,12 @@ async function initialize() {
         }
     );
 
-    for (const name of files) {
+    for (const name of vehicles) {
         const data = await (await fetch(`models/vehicles/${name}.json`)).json();
         const model = await ModelFactory.create(data['model'], 'vehicles');
 
         const vehicle = new Vehicle(data['name'], model, data['wheels'], data['rims']);
-        vehicles.set(name, vehicle);
+        Vehicles.set(name, vehicle);
     }
 
     window.dispatchEvent(new Event('resize'));
@@ -62,7 +73,7 @@ function handler(game: WebGame) {
             const matrix = MatrixUtils.perspective(70.0, window.innerWidth / window.innerHeight);
 
             if (game.state === State.CARS) {
-                const vehicle = (vehicles.get('drags') as Vehicle);
+                const vehicle = (Vehicles.get('drags') as Vehicle);
                 player.xz += 0.01;
 
                 shader.use();
