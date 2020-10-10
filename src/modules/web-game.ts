@@ -4,12 +4,23 @@ var handle: number = 0;
 var GL: WebGL2RenderingContext;
 
 async function initialize() {
+    window.addEventListener('resize', () => {
+        GL.canvas.width = window.innerWidth;
+        GL.canvas.height = window.innerHeight;
+    });
 
+    GL.enable(GL.DEPTH_TEST);
+    GL.depthFunc(GL.LEQUAL);
+    window.dispatchEvent(new Event('resize'));
 }
 
 function handler(game: WebGame) {
     function update() {
         handle = window.requestAnimationFrame(update);
+
+        GL.clearColor(0.0, 0.0, 0.0, 1.0);
+        GL.viewport(0, 0, GL.canvas.width, GL.canvas.height);
+        GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
     }
 
     if (handle === 0) {
