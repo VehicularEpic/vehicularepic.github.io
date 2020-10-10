@@ -73,7 +73,10 @@ function handler(game: WebGame) {
             const matrix = MatrixUtils.perspective(70.0, window.innerWidth / window.innerHeight);
 
             if (game.state === State.CARS) {
-                const vehicle = (Vehicles.get('drags') as Vehicle);
+                const vehicle = Vehicles.get(
+                    vehicles[game.selected]
+                ) as Vehicle;
+
                 player.xz += 0.01;
 
                 shader.use();
@@ -101,6 +104,7 @@ export enum State {
 export class WebGame {
 
     private _state: State = State.MENU;
+    private _selected: number = 0;
 
     public start(): void {
         handler(this);
@@ -116,6 +120,14 @@ export class WebGame {
 
     public set state(state: State) {
         this._state = state;
+    }
+
+    public get selected(): number {
+        return this._selected;
+    }
+
+    public set selected(value: number) {
+        this._selected = Math.max(Math.min(value, vehicles.length - 1), 0);
     }
 
     public set context(context: WebGL2RenderingContext) {
