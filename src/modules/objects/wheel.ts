@@ -23,14 +23,14 @@ export default class Wheel {
 
         for (let i = 0; i < resolution / 2; i++) {
             const vt: vec3[] = [];
-            vt[2] = vec3.fromValues((-depth * w_width) / 100.0, 0.0, 0.0);
+            vt[2] = vec3.fromValues((-depth * w_width), 0.0, 0.0);
 
             for (let j = i; j < i + 2; j++) {
                 const theta = 2.0 * Math.PI * j / (resolution / 2.0);
                 vt[j - i] = vec3.fromValues(
-                    (-4 * w_width) / 100.0,
-                    (magnitude * (Math.sin(theta) * 10.0)) / 100.0,
-                    (magnitude * (Math.cos(theta) * 10.0)) / 100.0
+                    (-4 * w_width),
+                    (magnitude * (Math.sin(theta) * 10.0)),
+                    (magnitude * (Math.cos(theta) * 10.0))
                 );
             }
 
@@ -43,9 +43,9 @@ export default class Wheel {
         for (let i = 0; i < resolution; i++) {
             const theta = 2.0 * Math.PI * i / resolution;
             const vec = vec3.fromValues(
-                (-4 * w_width) / 100.0,
-                (w_height * (Math.sin(theta) * 12.557)) / 100.0,
-                (w_height * (Math.cos(theta) * 12.557)) / 100.0
+                (-4 * w_width),
+                (w_height * (Math.sin(theta) * 12.557)),
+                (w_height * (Math.cos(theta) * 12.557))
             );
 
             vertex.push(vec);
@@ -93,7 +93,6 @@ export default class Wheel {
             }
         }
 
-
         for (let i = resolution / 2; i < data.length; i++) {
             colors.push(
                 [0.18, 0.18, 0.18],
@@ -111,7 +110,7 @@ export default class Wheel {
 
     public render(shader: ShaderProgram, matrix: mat4): void {
         const wt = MatrixUtils.transformation(
-            this.position[0], this.position[1], this.position[2],
+            this.position[0] / 100.0, this.position[1] / 100.0, this.position[2] / 100.0,
             this.wxz, this.wzy, 0.0
         );
 
