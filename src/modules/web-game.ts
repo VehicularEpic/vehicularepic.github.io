@@ -110,6 +110,78 @@ class ShaderProgram {
 
 }
 
+class VertexArray {
+
+    private readonly buffer: WebGLVertexArrayObject;
+    private readonly buffers: WebGLBuffer[] = [];
+
+    constructor() {
+        this.buffer = GL.createVertexArray() as WebGLVertexArrayObject;
+    }
+
+    public bind(): void {
+        GL.bindVertexArray(this.buffer);
+    }
+
+    public unbind(): void {
+        GL.bindVertexArray(null);
+    }
+
+    public push(data: number[]): void {
+        this.bind();
+        const index = this.buffers.length;
+        const object = GL.createBuffer() as WebGLBuffer;
+        this.buffers.push(object);
+
+        GL.enableVertexAttribArray(index);
+        GL.bindBuffer(GL.ARRAY_BUFFER, object);
+        GL.bufferData(GL.ARRAY_BUFFER, new Float32Array(data), GL.STATIC_DRAW);
+        GL.vertexAttribPointer(index, 3, GL.FLOAT, false, 0, 0);
+        GL.bindBuffer(GL.ARRAY_BUFFER, null);
+        this.unbind();
+    }
+
+}
+
+class Model {
+
+    private readonly length: number;
+    private readonly buffer: VertexArray;
+
+    constructor(object: {
+        materials: {
+            [name: string]: number[]
+        },
+        normals: number[][],
+        vertices: number[][],
+        faces: {
+            [name: string]: number[][]
+        }
+    }) {
+        this.buffer = new VertexArray();
+        const vertices: number[][] = [], colors: number[][] = [];
+
+        Object.keys(object.faces).forEach(e => {
+            const material = object.materials[e];
+            object.faces[e].flat().forEach(a => {
+                vertices.push(object.vertices[a - 1]);
+                colors.push(material);
+            });
+        });
+
+        this.length = vertices.length;
+        this.buffer.push(vertices.flat());
+        this.buffer.push(colors.flat());
+    }
+
+    public render(): void {
+        this.buffer.bind();
+        GL.drawArrays(GL.TRIANGLES, 0, this.length);
+        this.buffer.unbind();
+    }
+
+}
+
 class MatrixUtils {
 
     public static perspective(fovY: number, aspect: number): mat4 {
