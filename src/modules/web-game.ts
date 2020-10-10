@@ -49,6 +49,67 @@ export class WebGame {
 
 }
 
+class ShaderProgram {
+
+    private readonly uniforms: {
+        [uniform: string]: WebGLUniformLocation
+    } = {};
+    private readonly program: WebGLProgram;
+
+    public constructor() {
+        this.program = GL.createProgram() as WebGLProgram;
+    }
+
+    public async create(...shaders: { name: string, type: GLenum }[]): Promise<void> {
+        async function fetchShader(file: string, type: GLenum): Promise<WebGLShader> {
+            return (await fetch(file)).text().then(data => {
+                const shader = GL.createShader(type) as WebGLShader;
+                GL.shaderSource(shader, data);
+                GL.compileShader(shader);
+
+                if (!GL.getShaderParameter(shader, GL.COMPILE_STATUS)) {
+                    return Promise.reject(GL.getShaderInfoLog(shader));
+                }
+
+                return Promise.resolve(shader);
+            });
+        }
+
+        for (const e of shaders) {
+            const shader = await fetchShader(`shaders/${e.name}`, e.type);
+            GL.attachShader(this.program, shader);
+        }
+
+        GL.linkProgram(this.program);
+        if (!GL.getProgramParameter(this.program, GL.LINK_STATUS)) {
+            throw new Error('[SHADER_PROGRAM ERROR] ' + GL.getProgramInfoLog(this.program));
+        }
+    }
+
+    public use(): void {
+        GL.useProgram(this.program);
+    }
+
+    public uniform(name: string): WebGLUniformLocation {
+        if (this.uniforms[name] !== undefined) {
+            return this.uniforms[name];
+        }
+
+        return this.uniforms[name] = GL.getUniformLocation(
+            this.program, name
+        ) as WebGLUniformLocation;
+    }
+
+    public uniform1i(name: string, value: GLint) {
+        GL.uniform1i(this.uniform(name), value);
+    }
+
+    public uniformMatrix4fv(name: string, matrix: mat4) {
+        GL.uniformMatrix4fv(this.uniform(name), false, matrix);
+    }
+
+}
+
 class MatrixUtils {
 
     public static perspective(fovY: number, aspect: number): mat4 {
