@@ -4,6 +4,7 @@ import ModelFactory from './factory/model-factory'
 
 var handle: number = 0;
 var GL: WebGL2RenderingContext;
+var shader: ShaderProgram;
 
 const files: string[] = [
     'drags'
@@ -17,6 +18,18 @@ async function initialize() {
 
     GL.enable(GL.DEPTH_TEST);
     GL.depthFunc(GL.LEQUAL);
+
+    shader = new ShaderProgram();
+    await shader.create(
+        {
+            name: 'vertex.glsl',
+            type: GL.VERTEX_SHADER
+        },
+        {
+            name: 'fragment.glsl',
+            type: GL.FRAGMENT_SHADER
+        }
+    );
 
     for (const name of files) {
         const data = await (await fetch(`models/${name}.json`)).json();
