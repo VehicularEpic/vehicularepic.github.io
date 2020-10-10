@@ -1,5 +1,6 @@
-import path from 'path'
-import { mat4, quat } from 'gl-matrix'
+import { mat4 } from 'gl-matrix'
+
+import ModelFactory from './factory/model-factory'
 
 var handle: number = 0;
 var GL: WebGL2RenderingContext;
@@ -71,7 +72,7 @@ export class WebGame {
 
 }
 
-class ShaderProgram {
+export class ShaderProgram {
 
     private readonly uniforms: {
         [uniform: string]: WebGLUniformLocation
@@ -165,74 +166,7 @@ class VertexArray {
 
 }
 
-class ModelFactory {
-
-    public static async create(object: string): Promise<Model> {
-        const vertices: number[][] = [];
-        const colors: number[][] = [];
-        const normals: number[][] = [];
-
-        const data = await (await fetch(`models/${object}`)).text();
-
-        function vec3(type: 'v' | 'vn'): number[][] {
-            const values: number[][] = [];
-            const regex = new RegExp(`${type}\\s(.+?)$`, 'gm');
-
-            for (let a; (a = regex.exec(data)) !== null;) {
-                values.push(a[1].split(/\s/).map(i => Number(i)));
-            }
-
-            return values;
-        }
-
-        const v = vec3('v'), vn = vec3('vn');
-        const materials = await (async () => {
-            const values: {
-                [material: string]: number[]
-            } = {};
-
-            const mtllib = /mtllib\s(.+?)$/gm.exec(data);
-            if (mtllib !== null) {
-                const file = path.basename(mtllib[1]);
-                const rgx1 = /newmtl\s(.+?)$/gm, rgx2 = /Kd\s(.+?)$/gm;
-                const mtldata = await (await fetch(`models/${file}`)).text();
-
-                for (let a; (a = rgx1.exec(mtldata)) !== null;) {
-                    values[a[1]] = (rgx2.exec(mtldata) as RegExpExecArray)[1]
-                        .split(/\s/).map(i => Number(i));
-                }
-
-                return values;
-            }
-
-            values['default'] = [0.25, 0.25, 0.25];
-            return values;
-        })();
-
-        var material: string = 'default';
-        data.split(/\n/gm).filter(s =>
-            /^(usemtl|f)/.test(s)
-        ).map(e => e.split(/\s/, 4)).forEach(e => {
-            if (e[0] === 'usemtl') {
-                material = e[1];
-            } else if (e[0] === 'f') {
-                e.slice(1).forEach(i => {
-                    const indices = i.split(/\/\//g)
-                        .map(j => Number(j));
-
-                    vertices.push(v[indices[0] - 1]);
-                    colors.push(materials[material]);
-                    normals.push(vn[indices[1] - 1]);
-                });
-            }
-        });
-
-        return new Model({ vertices, colors, normals });
-    }
-
-}
-
-class Model {
+export class Model {
 
     private readonly length: number;
     private readonly buffer: VertexArray;
@@ -254,46 +188,6 @@ class Model {
         this.buffer.bind();
         GL.drawArrays(GL.TRIANGLES, 0, this.length);
         this.buffer.unbind();
-    }
-
-}
-
-class MatrixUtils {
-
-    public static perspective(fovY: number, aspect: number): mat4 {
-        const near = 0.01;
-        const height = near * Math.tan((fovY / 2) * (Math.PI / 180.0));
-
-        const matrix = mat4.create();
-        mat4.frustum(matrix, -(height * aspect), height * aspect, -height, height, near, 0);
-
-        const e = 1E-6;
-        matrix[10] = e - 1.0;
-        matrix[14] = (e - 2.0) * near;
-        return matrix;
-    }
-
-    public static lookAt(x: number, y: number, z: number, cx: number, cy: number, cz: number): mat4 {
-        return mat4.lookAt(
-            mat4.create(),
-            [x, y, z],
-            [cx, cy, cz],
-            [0.0, -1.0, 0.0]
-        );
-    }
-
-    public static transformation(x: number, y: number, z: number, xz: number, zy: number, xy: number): mat4 {
-        const quat_xz = quat.setAxisAngle(quat.create(), [0.0, -1.0, 0.0], xz);
-        const quat_zy = quat.setAxisAngle(quat.create(), [1.0, 0.0, 0.0], zy);
-        const quat_xy = quat.setAxisAngle(quat.create(), [0.0, 0.0, 1.0], xy);
-
-        const rotated = quat.create();
-        quat.mul(rotated, quat_xz, quat_zy);
-        quat.mul(rotated, rotated, quat_xy);
-
-        return mat4.fromRotationTranslationScale(mat4.create(),
-            rotated, [x, y, z], [1.0, 1.0, 1.0]
-        );
     }
 
 }
