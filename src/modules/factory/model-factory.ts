@@ -3,12 +3,14 @@ import { Model } from '@/modules/web-game'
 
 export default class ModelFactory {
 
-    public static async create(object: string): Promise<Model> {
+    public static async create(object: string, folder: 'objects' | 'vehicles'): Promise<Model> {
+        const base = path.join('models', folder);
+
         const vertices: number[][] = [];
         const colors: number[][] = [];
         const normals: number[][] = [];
 
-        const data = await (await fetch(`models/${object}`)).text();
+        const data = await (await fetch(path.join(base, object))).text();
 
         function vec3(type: 'v' | 'vn'): number[][] {
             const values: number[][] = [];
@@ -31,7 +33,7 @@ export default class ModelFactory {
             if (mtllib !== null) {
                 const file = path.basename(mtllib[1]);
                 const rgx1 = /newmtl\s(.+?)$/gm, rgx2 = /Kd\s(.+?)$/gm;
-                const mtldata = await (await fetch(`models/${file}`)).text();
+                const mtldata = await (await fetch(path.join(base, file))).text();
 
                 for (let a; (a = rgx1.exec(mtldata)) !== null;) {
                     values[a[1]] = (rgx2.exec(mtldata) as RegExpExecArray)[1]

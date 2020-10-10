@@ -35,8 +35,8 @@ async function initialize() {
     );
 
     for (const name of files) {
-        const data = await (await fetch(`models/${name}.json`)).json();
-        const model = await ModelFactory.create(data['model']);
+        const data = await (await fetch(`models/vehicles/${name}.json`)).json();
+        const model = await ModelFactory.create(data['model'], 'vehicles');
 
         const vehicle = new Vehicle(data['name'], model, data['wheels'], data['rims']);
         vehicles.set(name, vehicle);
