@@ -66,6 +66,8 @@ function handler(game: WebGame) {
                 shader.uniformMatrix4fv('projection', matrix);
                 shader.uniformMatrix4fv('view',
                     MatrixUtils.lookAt(0.0, -4.0, 20.0, 0.0, 0.0, 0.0));
+
+                shader.uniform3f('u_LightPos', 0.0, 15.0, -10.0);
                 vehicle.render(shader);
             }
         }
@@ -165,6 +167,10 @@ export class ShaderProgram {
 
     public uniformMatrix4fv(name: string, matrix: mat4) {
         GL.uniformMatrix4fv(this.uniform(name), false, matrix);
+    }
+
+    public uniform3f(name: string, x: number, y: number, z: number) {
+        GL.uniform3f(this.uniform(name), x, y, z);
     }
 
 }
