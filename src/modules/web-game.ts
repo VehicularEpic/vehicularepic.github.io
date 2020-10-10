@@ -3,6 +3,11 @@ import { mat4, quat } from 'gl-matrix'
 var handle: number = 0;
 var GL: WebGL2RenderingContext;
 
+const files: string[] = [
+    'drags'
+];
+const models: Map<string, Model> = new Map();
+
 async function initialize() {
     window.addEventListener('resize', () => {
         GL.canvas.width = window.innerWidth;
@@ -11,6 +16,12 @@ async function initialize() {
 
     GL.enable(GL.DEPTH_TEST);
     GL.depthFunc(GL.LEQUAL);
+
+    for (const name of files) {
+        const data = await (await fetch(`models/${name}.json`)).json();
+        models.set(name, new Model(data));
+    }
+
     window.dispatchEvent(new Event('resize'));
 }
 
