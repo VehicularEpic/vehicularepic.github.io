@@ -33,16 +33,16 @@ button {
 
 button:hover {
     background-color: var(--button-color);
-    animation: flick 0.01s linear infinite;
+    animation: breathe 1s linear infinite;
 }
 
 button:focus {
     outline: none;
 }
 
-@keyframes flick {
+@keyframes breathe {
     50% {
-        opacity: 0;
+        background-color: rgba(var(--button-color), 0);
     }
 }
 </style>
