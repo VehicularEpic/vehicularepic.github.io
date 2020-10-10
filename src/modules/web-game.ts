@@ -1,5 +1,7 @@
 import { mat4 } from 'gl-matrix'
 
+import Vehicle from './objects/vehicle'
+import { MatrixUtils } from './utils/utils'
 import ModelFactory from './factory/model-factory'
 
 var handle: number = 0;
@@ -9,6 +11,7 @@ var shader: ShaderProgram;
 const files: string[] = [
     'drags'
 ];
+const vehicles: Map<string, Vehicle> = new Map();
 
 async function initialize() {
     window.addEventListener('resize', () => {
@@ -34,6 +37,9 @@ async function initialize() {
     for (const name of files) {
         const data = await (await fetch(`models/${name}.json`)).json();
         const model = await ModelFactory.create(data['model']);
+
+        const vehicle = new Vehicle(data['name'], model, data['wheels'], data['rims']);
+        vehicles.set(name, vehicle);
     }
 
     window.dispatchEvent(new Event('resize'));
@@ -46,6 +52,23 @@ function handler(game: WebGame) {
         GL.clearColor(0.0, 0.0, 0.0, 1.0);
         GL.viewport(0, 0, GL.canvas.width, GL.canvas.height);
         GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
+
+        if (game.state !== State.MENU) {
+            const matrix = MatrixUtils.perspective(70.0, window.innerWidth / window.innerHeight);
+
+            if (game.state === State.CARS) {
+                const vehicle = (vehicles.get('drags') as Vehicle);
+                vehicle.xz += 0.01;
+                vehicle.y = -1.0;
+                vehicle.z = 10.0;
+
+                shader.use();
+                shader.uniformMatrix4fv('projection', matrix);
+                shader.uniformMatrix4fv('view',
+                    MatrixUtils.lookAt(0.0, -4.0, 20.0, 0.0, 0.0, 0.0));
+                vehicle.render(shader);
+            }
+        }
     }
 
     if (handle === 0) {

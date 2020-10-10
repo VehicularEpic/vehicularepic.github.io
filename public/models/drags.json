@@ -1,0 +1,51 @@
+{
+    "name": "Turbo Dragster",
+    "model": "drags.obj",
+    "rims": {
+        "magnitude": 2,
+        "depth": 0.3,
+        "color": [
+            1,
+            1,
+            1
+        ]
+    },
+    "wheels": [
+        {
+            "width": 16,
+            "height": 16,
+            "position": [
+                -28.8,
+                16,
+                160
+            ]
+        },
+        {
+            "width": -16,
+            "height": 16,
+            "position": [
+                28.8,
+                16,
+                160
+            ]
+        },
+        {
+            "width": 64,
+            "height": 32,
+            "position": [
+                -64,
+                -6.4,
+                -160
+            ]
+        },
+        {
+            "width": -64,
+            "height": 32,
+            "position": [
+                64,
+                -6.4,
+                -160
+            ]
+        }
+    ]
+}
