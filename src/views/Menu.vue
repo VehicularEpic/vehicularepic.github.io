@@ -2,7 +2,7 @@
     <div>
         <div class="title">The Vehicular Epic</div>
         <div class="menu">
-            <MenuButton @click="state(1)" text="New Game" color="red" />
+            <MenuButton @click="$game.state = 1" text="New Game" color="red" />
             <MenuButton text="Options" color="green" />
             <MenuButton text="Credits" color="blue" />
         </div>
@@ -19,10 +19,6 @@ import MenuButton from '@/components/MenuButton.vue'
 
 @Component({ components: { MenuButton } })
 export default class Menu extends Vue {
-
-    private state(state: State): void {
-        this.$game.state = state;
-    }
 
 }
 </script>

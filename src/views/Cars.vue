@@ -5,7 +5,11 @@
         </div>
         <div>
             <p v-text="$game.vehicle.name"></p>
-            <MenuButton text="Continue" color="green" />
+            <MenuButton
+                @click="$game.state = 2"
+                text="Continue"
+                color="green"
+            />
         </div>
         <div class="aside">
             <MenuButton text="Next >" color="blue" />
