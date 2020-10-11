@@ -1,6 +1,7 @@
 <template>
     <div>
         <Menu v-if="$game.state === 0" />
+        <Cars v-if="$game.state === 1" />
         <canvas ref="canvas" />
     </div>
 </template>
@@ -10,8 +11,9 @@ import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 
 import Menu from '@/views/Menu.vue'
+import Cars from '@/views/Cars.vue'
 
-@Component({ components: { Menu } })
+@Component({ components: { Menu, Cars } })
 export default class App extends Vue {
 
     private mounted(): void {
