@@ -73,7 +73,7 @@ export class MatrixUtils {
         );
     }
 
-    public static transformation(x: number, y: number, z: number, xz: number, zy: number, xy: number): mat4 {
+    public static transformation(x: number, y: number, z: number, xz: number, zy: number, xy: number, scale: number = 1.0): mat4 {
         const quat_xz = quat.setAxisAngle(quat.create(), [0.0, -1.0, 0.0], xz);
         const quat_zy = quat.setAxisAngle(quat.create(), [1.0, 0.0, 0.0], zy);
         const quat_xy = quat.setAxisAngle(quat.create(), [0.0, 0.0, 1.0], xy);
@@ -83,7 +83,7 @@ export class MatrixUtils {
         quat.mul(rotated, rotated, quat_xy);
 
         return mat4.fromRotationTranslationScale(mat4.create(),
-            rotated, [x, y, z], [1.0, 1.0, 1.0]
+            rotated, [x, y, z], [scale, scale, scale]
         );
     }
 
