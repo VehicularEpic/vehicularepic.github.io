@@ -15,12 +15,9 @@ void main(void) {
         normals = -v_normals;
     }
 
-    float distance = length(u_LightPos - v_position);
-    vec3 lightVector = normalize(u_LightPos - v_position);
+    vec3 n = normalize(normals);
+    vec3 l_dir = normalize(u_LightPos.xyz);
+    float intensity = max(dot(n, l_dir), 0.0) * 2.5;
 
-    float brightness = 100.0;
-    float diffuse = max(dot(normals, lightVector), 0.1) * brightness;
- 
-    diffuse = diffuse * (1.0 / (1.0 + (0.25 * distance * distance)));
-    frag_color = vec4(v_colors * diffuse, 1.0);
+    frag_color = vec4(intensity * v_colors, 1.0);
 }

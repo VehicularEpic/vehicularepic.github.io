@@ -14,7 +14,7 @@ export default class ModelFactory {
 
         function vec3(type: 'v' | 'vn'): number[][] {
             const values: number[][] = [];
-            const regex = new RegExp(`${type}\\s(.+?)$`, 'gm');
+            const regex = new RegExp(`^${type}\\s(.+?)$`, 'gm');
 
             for (let a; (a = regex.exec(data)) !== null;) {
                 values.push(a[1].split(/\s/).map(i => Number(i)));
@@ -29,10 +29,10 @@ export default class ModelFactory {
                 [material: string]: number[]
             } = {};
 
-            const mtllib = /mtllib\s(.+?)$/gm.exec(data);
+            const mtllib = /^mtllib\s(.+?)$/gm.exec(data);
             if (mtllib !== null) {
                 const file = path.basename(mtllib[1]);
-                const rgx1 = /newmtl\s(.+?)$/gm, rgx2 = /Kd\s(.+?)$/gm;
+                const rgx1 = /^newmtl\s(.+?)$/gm, rgx2 = /^Kd\s(.+?)$/gm;
                 const mtldata = await (await fetch(path.join(base, file))).text();
 
                 for (let a; (a = rgx1.exec(mtldata)) !== null;) {
@@ -55,12 +55,12 @@ export default class ModelFactory {
                 material = e[1];
             } else if (e[0] === 'f') {
                 e.slice(1).forEach(i => {
-                    const indices = i.split(/\/\//g)
+                    const indices = i.split(/\//g)
                         .map(j => Number(j));
 
                     vertices.push(v[indices[0] - 1]);
                     colors.push(materials[material]);
-                    normals.push(vn[indices[1] - 1]);
+                    normals.push(vn[indices[2] - 1]);
                 });
             }
         });
