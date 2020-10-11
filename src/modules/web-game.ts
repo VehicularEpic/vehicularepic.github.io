@@ -30,6 +30,7 @@ const models: string[] = [
 ];
 
 const Vehicles: Map<string, Vehicle> = new Map();
+const Objects: Map<string, Model> = new Map();
 
 async function initialize() {
     window.addEventListener('resize', () => {
@@ -60,6 +61,12 @@ async function initialize() {
         Vehicles.set(name, vehicle);
     }
 
+    const objects = models.filter(e => !['start', 'full', 'cres'].includes(e));
+    for (const name of objects) {
+        const model = await ModelFactory.create(`${name}.obj`, 'objects');
+        Objects.set(name, model);
+    }
+
     window.dispatchEvent(new Event('resize'));
 }
 
@@ -67,7 +74,6 @@ function handler(game: WebGame) {
     function update() {
         handle = window.requestAnimationFrame(update);
 
-        GL.clearColor(0.0, 0.0, 0.0, 1.0);
         GL.viewport(0, 0, GL.canvas.width, GL.canvas.height);
         GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
 
@@ -78,7 +84,7 @@ function handler(game: WebGame) {
             );
 
             if (game.state === State.CARS) {
-                const vehicle = game.vehicle;
+                GL.clearColor(0.0, 0.0, 0.0, 1.0);
 
                 player.xz += 0.01;
                 camera.pos(0.0, -4.0, 20.0);
@@ -86,7 +92,7 @@ function handler(game: WebGame) {
                 shader.uniformMatrix4fv('view', camera.matrix);
 
                 shader.uniform3f('u_LightPos', 0.0, 100.0, -10.0);
-                vehicle.render(shader, player);
+                game.vehicle.render(shader, player);
             }
         }
     }
