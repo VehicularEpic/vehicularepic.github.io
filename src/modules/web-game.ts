@@ -4,6 +4,8 @@ import Entity from './objects/entity'
 import Vehicle from './objects/vehicle'
 import { MatrixUtils } from './utils/utils'
 import ModelFactory from './factory/model-factory'
+import Stage from './objects/stage'
+import StageFactory from './factory/stage-factory'
 import Camera from './utils/camera'
 
 var handle: number = 0;
@@ -31,6 +33,9 @@ const models: string[] = [
 
 const Vehicles: Map<string, Vehicle> = new Map();
 const Objects: Map<string, Model> = new Map();
+
+const stages: number = 71;
+const Stages: Map<number, Stage> = new Map();
 
 async function initialize() {
     window.addEventListener('resize', () => {
@@ -67,6 +72,10 @@ async function initialize() {
         Objects.set(name, model);
     }
 
+    for (let i = 1; i <= stages; i++) {
+        Stages.set(i, await StageFactory.create(String(i), models, Objects));
+    }
+
     window.dispatchEvent(new Event('resize'));
 }
 
@@ -94,6 +103,13 @@ function handler(game: WebGame) {
                 shader.uniform3f('u_LightPos', 0.0, 100.0, -10.0);
                 game.vehicle.render(shader, player);
             }
+
+            if (game.state === State.STAGES) {
+                const stage = Stages.get(game.stage) as Stage;
+
+                stage.scene(GL, shader);
+                stage.render(shader, camera);
+            }
         }
     }
 
@@ -112,6 +128,8 @@ export class WebGame {
 
     private _state: State = State.MENU;
     private _selected: number = 0;
+
+    private _stage: number = 64;
 
     public start(): void {
         handler(this);
@@ -135,6 +153,18 @@ export class WebGame {
 
     public set selected(value: number) {
         this._selected = Math.max(Math.min(value, vehicles.length - 1), 0);
+    }
+
+    public get stages(): number {
+        return stages;
+    }
+
+    public get stage(): number {
+        return this._stage;
+    }
+
+    public set stage(value: number) {
+        this._stage = value;
     }
 
     public get vehicle(): Vehicle {
