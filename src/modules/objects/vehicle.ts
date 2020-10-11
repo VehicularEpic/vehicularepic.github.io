@@ -6,7 +6,7 @@ import { ShaderProgram, Model } from '@/modules/web-game'
 
 export default class Vehicle {
 
-    private readonly name: string;
+    public readonly name: string;
     private readonly model: Model;
     private readonly wheels: Wheel[] = [];
 

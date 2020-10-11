@@ -73,9 +73,7 @@ function handler(game: WebGame) {
             const matrix = MatrixUtils.perspective(70.0, window.innerWidth / window.innerHeight);
 
             if (game.state === State.CARS) {
-                const vehicle = Vehicles.get(
-                    vehicles[game.selected]
-                ) as Vehicle;
+                const vehicle = game.vehicle;
 
                 player.xz += 0.01;
 
@@ -128,6 +126,12 @@ export class WebGame {
 
     public set selected(value: number) {
         this._selected = Math.max(Math.min(value, vehicles.length - 1), 0);
+    }
+
+    public get vehicle(): Vehicle {
+        return Vehicles.get(
+            vehicles[this._selected]
+        ) as Vehicle;
     }
 
     public set context(context: WebGL2RenderingContext) {
