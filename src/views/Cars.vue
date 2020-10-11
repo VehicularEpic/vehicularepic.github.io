@@ -1,12 +1,13 @@
 <template>
     <div class="container">
-        <div class="center">
+        <div class="aside">
             <MenuButton text="< Back" color="blue" />
         </div>
         <div>
             <p v-text="$game.vehicle.name"></p>
+            <MenuButton text="Continue" color="green" />
         </div>
-        <div class="center">
+        <div class="aside">
             <MenuButton text="Next >" color="blue" />
         </div>
     </div>
@@ -37,15 +38,24 @@ div.container {
     padding: 16px;
     height: 100vh;
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
     box-sizing: border-box;
 
     > div {
+        flex: 1;
         display: flex;
+        flex-direction: column;
+        justify-content: inherit;
     }
 
-    div.center {
-        align-items: center;
+    div.aside {
+        flex: 0.1;
+        justify-content: center;
+    }
+
+    p {
+        text-align: center;
     }
 }
 </style>
