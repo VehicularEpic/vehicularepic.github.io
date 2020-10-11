@@ -4,11 +4,13 @@ import Entity from './objects/entity'
 import Vehicle from './objects/vehicle'
 import { MatrixUtils } from './utils/utils'
 import ModelFactory from './factory/model-factory'
+import Camera from './utils/camera'
 
 var handle: number = 0;
 var GL: WebGL2RenderingContext;
 var shader: ShaderProgram;
 
+const camera = new Camera();
 const player = new Entity();
 player.y = -1.0;
 player.z = 10.0;
@@ -70,19 +72,20 @@ function handler(game: WebGame) {
         GL.clear(GL.COLOR_BUFFER_BIT | GL.DEPTH_BUFFER_BIT);
 
         if (game.state !== State.MENU) {
-            const matrix = MatrixUtils.perspective(70.0, window.innerWidth / window.innerHeight);
+            shader.use();
+            shader.uniformMatrix4fv('projection',
+                MatrixUtils.perspective(70.0, window.innerWidth / window.innerHeight)
+            );
 
             if (game.state === State.CARS) {
                 const vehicle = game.vehicle;
 
                 player.xz += 0.01;
+                camera.pos(0.0, -4.0, 20.0);
+                camera.center(0.0, 0.0, 0.0);
+                shader.uniformMatrix4fv('view', camera.matrix);
 
-                shader.use();
-                shader.uniformMatrix4fv('projection', matrix);
-                shader.uniformMatrix4fv('view',
-                    MatrixUtils.lookAt(0.0, -4.0, 20.0, 0.0, 0.0, 0.0));
-
-                shader.uniform3f('u_LightPos', 0.0, 15.0, -10.0);
+                shader.uniform3f('u_LightPos', 0.0, 100.0, -10.0);
                 vehicle.render(shader, player);
             }
         }
