@@ -31,9 +31,11 @@ export default class StageFactory {
                 models.push(objects.get(name) as Model);
 
                 const entity = new Entity();
-                entity.x = values[1] / 100.0;
-                entity.z = values[2] / 100.0;
-                entity.y = (values[3] - 250) / 100.0;
+                entity.pos(
+                    values[1] / 100.0,
+                    (values[3] - 250) / 100.0,
+                    values[2] / 100.0
+                );
                 entity.xz = values[4] * (Math.PI / 180.0);
                 entities.push(entity);
             }

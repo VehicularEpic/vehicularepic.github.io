@@ -1,15 +1,17 @@
-import { vec3, mat4 } from 'gl-matrix'
+import { vec3 } from 'gl-matrix'
+import { Quaternion, Vec3 } from 'cannon'
 
 import { ShaderProgram, Model } from '@/modules/web-game'
 import { TriangleMesh, VecUtils, MatrixUtils } from '@/modules/utils/utils'
 
 export default class Wheel {
 
-    private readonly model: Model;
-    private readonly position: number[];
+    public readonly radius: number;
 
-    private wxz: number = 0;
-    private wzy: number = 0;
+    private readonly model: Model;
+
+    public position: Vec3;
+    public quat: Quaternion = new Quaternion(0.0, 0.0, 0.0, 0.0);
 
     constructor(
         { width, height, position }: { width: number, height: number, position: number[] },
@@ -105,17 +107,29 @@ export default class Wheel {
             vertices: data.map(e => [[...e.p1], [...e.p2], [...e.p3]]).flat(),
             colors, normals: VecUtils.normals(data)
         });
-        this.position = position;
+        this.radius = w_height / 8.0;
+
+        const { [0]: x, [1]: y, [2]: z } = position.map(e => e / 100.0);
+        this.position = new Vec3(x, y, z);
     }
 
-    public render(shader: ShaderProgram, matrix: mat4): void {
-        const wt = MatrixUtils.transformation(
-            this.position[0] / 100.0, this.position[1] / 100.0, this.position[2] / 100.0,
-            this.wxz, this.wzy, 0.0
+    public render(shader: ShaderProgram): void {
+        shader.uniformMatrix4fv('model',
+            MatrixUtils.transform(this.position, this.quat)
         );
-
-        shader.uniformMatrix4fv('model', mat4.mul(mat4.create(), matrix, wt));
         this.model.render();
+    }
+
+    public get x(): number {
+        return this.position.x;
+    }
+
+    public get y(): number {
+        return this.position.y;
+    }
+
+    public get z(): number {
+        return this.position.z;
     }
 
 }

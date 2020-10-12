@@ -1,14 +1,14 @@
-import Wheel from './wheel'
-import Entity from './entity'
-
 import { MatrixUtils } from '@/modules/utils/utils'
 import { ShaderProgram, Model } from '@/modules/web-game'
+
+import Wheel from './wheel'
+import Player from './player'
 
 export default class Vehicle {
 
     public readonly name: string;
     private readonly model: Model;
-    private readonly wheels: Wheel[] = [];
+    private readonly _wheels: Wheel[] = [];
 
     constructor(
         name: string,
@@ -27,23 +27,20 @@ export default class Vehicle {
         this.name = name;
         this.model = model;
         wheels.map(e => new Wheel(e, rims))
-            .forEach(e =>
-                this.wheels.push(e)
-            );
+            .forEach(e => this._wheels.push(e));
     }
 
-    public render(shader: ShaderProgram, entity: Entity): void {
-        const matrix = MatrixUtils.transformation(
-            entity.x, entity.y, entity.z,
-            entity.xz, entity.zy, entity.xy
+    public render(shader: ShaderProgram, player: Player): void {
+        shader.uniformMatrix4fv('model',
+            MatrixUtils.transform(player.position, player.quat)
         );
 
-        shader.uniformMatrix4fv('model', matrix);
         this.model.render();
+        this._wheels.forEach(e => e.render(shader));
+    }
 
-        this.wheels.forEach(e => {
-            e.render(shader, matrix);
-        });
+    public get wheels(): Wheel[] {
+        return this._wheels;
     }
 
 }

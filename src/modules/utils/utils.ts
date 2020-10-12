@@ -1,3 +1,4 @@
+import { Quaternion, Vec3 } from 'cannon'
 import { vec3, mat4, quat } from 'gl-matrix'
 
 export class TriangleMesh {
@@ -73,18 +74,23 @@ export class MatrixUtils {
         );
     }
 
-    public static transformation(x: number, y: number, z: number, xz: number, zy: number, xy: number, scale: number = 1.0): mat4 {
-        const quat_xz = quat.setAxisAngle(quat.create(), [0.0, -1.0, 0.0], xz);
-        const quat_zy = quat.setAxisAngle(quat.create(), [1.0, 0.0, 0.0], zy);
-        const quat_xy = quat.setAxisAngle(quat.create(), [0.0, 0.0, 1.0], xy);
+    public static transform(position: Vec3, quaternion?: Quaternion, scale: number = 1.0): mat4 {
+        const { x, y, z } = position;
 
-        const rotated = quat.create();
-        quat.mul(rotated, quat_xz, quat_zy);
-        quat.mul(rotated, rotated, quat_xy);
+        const matrix = mat4.create();
+        mat4.translate(matrix, matrix, [y, -z, x] as vec3);
+        mat4.scale(matrix, matrix, [scale, scale, scale] as vec3);
 
-        return mat4.fromRotationTranslationScale(mat4.create(),
-            rotated, [x, y, z], [scale, scale, scale]
-        );
+        if (quaternion !== undefined) {
+            const { x: qx, y: qy, z: qz, w: qw } = quaternion;
+            const mat = mat4.fromQuat(mat4.create(),
+                quat.set(quat.create(), qy, -qz, qx, -qw)
+            );
+
+            return mat4.mul(matrix, matrix, mat);
+        }
+
+        return matrix;
     }
 
 }
