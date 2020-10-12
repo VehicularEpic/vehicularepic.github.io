@@ -1,21 +1,25 @@
 import { mat4 } from 'gl-matrix'
+import { World, SAPBroadphase } from 'cannon'
 
-import Entity from './objects/entity'
 import Vehicle from './objects/vehicle'
 import { MatrixUtils } from './utils/utils'
 import ModelFactory from './factory/model-factory'
 import Stage from './objects/stage'
 import StageFactory from './factory/stage-factory'
 import Camera from './utils/camera'
+import Player from './objects/player'
 
 var handle: number = 0;
 var GL: WebGL2RenderingContext;
 var shader: ShaderProgram;
 
 const camera = new Camera();
-const player = new Entity();
-player.y = -1.0;
-player.z = 10.0;
+const player = new Player();
+
+const world = new World();
+world.broadphase = new SAPBroadphase(world);
+world.gravity.set(0, 0, -10);
+world.defaultContactMaterial.friction = 0.6;
 
 const vehicles: string[] = [
     'drags'
@@ -80,6 +84,19 @@ async function initialize() {
 }
 
 function handler(game: WebGame) {
+    var lastCallTime = 0;
+    const time = 1 / 60;
+
+    function step() {
+        const now = performance.now() / 1000;
+        if (lastCallTime === 0) {
+            world.step(time);
+            return lastCallTime = now;
+        }
+
+        world.step(time, now - lastCallTime, 3);
+    }
+
     function update() {
         handle = window.requestAnimationFrame(update);
 
@@ -95,22 +112,28 @@ function handler(game: WebGame) {
             if (game.state === State.CARS) {
                 GL.clearColor(0.0, 0.0, 0.0, 1.0);
 
-                player.xz += 0.01;
                 camera.pos(0.0, -4.0, 20.0);
                 camera.center(0.0, 0.0, 0.0);
                 shader.uniformMatrix4fv('view', camera.matrix);
 
-                shader.uniform3f('u_LightPos', 0.0, 100.0, -10.0);
+                shader.uniform3f('u_LightPos', 0.0, -100.0, -10.0);
                 game.vehicle.render(shader, player);
             }
 
-            if (game.state === State.STAGES) {
+            if (game.state === State.STAGES || game.state === State.GAME) {
                 const stage = Stages.get(game.stage) as Stage;
+
+                if (game.state === State.STAGES) {
+                    camera.pos(camera.x + 0.1, -100.0, camera.z + 0.1);
+                    shader.uniformMatrix4fv('view', camera.matrix);
+                }
 
                 stage.scene(GL, shader);
                 stage.render(shader, camera);
             }
         }
+
+        step();
     }
 
     if (handle === 0) {
@@ -175,6 +198,10 @@ export class WebGame {
 
     public set context(context: WebGL2RenderingContext) {
         GL = context;
+    }
+
+    public get player(): Player {
+        return player;
     }
 
 }
