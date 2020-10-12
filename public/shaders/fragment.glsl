@@ -17,7 +17,8 @@ void main(void) {
 
     vec3 n = normalize(normals);
     vec3 l_dir = normalize(u_LightPos.xyz);
-    float intensity = max(dot(n, l_dir), 0.0);
+    float intensity = clamp(dot(n, l_dir), 0.0f, 1.0f);
 
-    frag_color = vec4(intensity * v_colors, 1.0);
+    vec3 diffuse = vec3(0.2) + intensity;
+    frag_color = vec4(diffuse * v_colors, 1.0);
 }
