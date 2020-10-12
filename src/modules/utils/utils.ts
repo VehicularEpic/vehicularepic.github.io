@@ -48,6 +48,28 @@ export class VecUtils {
         return vec3.normalize(vec, vec);
     }
 
+    public static angles(q: Quaternion): Vec3 {
+        const angles = new Vec3();
+
+        const sinr_cosp = 2 * (q.w * q.x + q.y * q.z);
+        const cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y);
+        angles.x = Math.atan2(sinr_cosp, cosr_cosp);
+
+        const sinp = 2 * (q.w * q.y - q.z * q.x);
+
+        if (Math.abs(sinp) >= 1) {
+            angles.y = (Math.PI / 2.0) * Math.sign(sinp);
+        } else {
+            angles.y = Math.asin(sinp);
+        }
+
+        const siny_cosp = 2 * (q.w * q.z + q.x * q.y);
+        const cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
+        angles.z = Math.atan2(siny_cosp, cosy_cosp);
+
+        return angles;
+    }
+
 }
 
 export class MatrixUtils {
