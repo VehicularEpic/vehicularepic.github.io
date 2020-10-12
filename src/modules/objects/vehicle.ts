@@ -1,3 +1,5 @@
+import { Box, Shape, Vec3 } from 'cannon'
+
 import { MatrixUtils } from '@/modules/utils/utils'
 import { ShaderProgram, Model } from '@/modules/web-game'
 
@@ -7,12 +9,18 @@ import Player from './player'
 export default class Vehicle {
 
     public readonly name: string;
+    public readonly mass: number;
+
     private readonly model: Model;
     private readonly _wheels: Wheel[] = [];
+    private readonly boundaries: number[];
 
-    constructor(
+    constructor({ name, mass, boundaries, suspension, friction, wheels, rims }: {
         name: string,
-        model: Model,
+        mass: number,
+        boundaries: number[],
+        suspension: number,
+        friction: number,
         wheels: {
             width: number,
             height: number,
@@ -23,10 +31,12 @@ export default class Vehicle {
             depth: number,
             color: number[]
         }
-    ) {
+    }, model: Model) {
         this.name = name;
         this.model = model;
-        wheels.map(e => new Wheel(e, rims))
+        this.mass = mass;
+        this.boundaries = boundaries;
+        wheels.map(e => new Wheel(e, rims, suspension, friction))
             .forEach(e => this._wheels.push(e));
     }
 
@@ -41,6 +51,11 @@ export default class Vehicle {
 
     public get wheels(): Wheel[] {
         return this._wheels;
+    }
+
+    public get shape(): Shape {
+        const { [0]: x, [1]: y, [2]: z } = this.boundaries;
+        return new Box(new Vec3(z, x, y));
     }
 
 }
