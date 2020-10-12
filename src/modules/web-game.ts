@@ -95,6 +95,33 @@ function handler(game: WebGame) {
     const time = 1 / 60;
 
     function step() {
+        if (player.keys['ArrowUp']) {
+            player.vehicle.applyEngineForce(-player.force, 2);
+            player.vehicle.applyEngineForce(-player.force, 3);
+        }
+
+        if (player.keys['ArrowDown']) {
+            player.vehicle.applyEngineForce(player.force, 2);
+            player.vehicle.applyEngineForce(player.force, 3);
+        }
+
+        if (player.keys['ArrowRight']) {
+            player.vehicle.setSteeringValue(player.steer, 0);
+            player.vehicle.setSteeringValue(player.steer, 1);
+        }
+
+        if (player.keys['ArrowLeft']) {
+            player.vehicle.setSteeringValue(-player.steer, 0);
+            player.vehicle.setSteeringValue(-player.steer, 1);
+        }
+
+        if (player.keys['Space']) {
+            player.vehicle.setBrake(player.brake, 0);
+            player.vehicle.setBrake(player.brake, 1);
+            player.vehicle.setBrake(player.brake, 2);
+            player.vehicle.setBrake(player.brake, 3);
+        }
+
         const now = performance.now() / 1000;
         if (lastCallTime === 0) {
             world.step(time);

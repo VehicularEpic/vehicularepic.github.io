@@ -1,6 +1,14 @@
 {
     "name": "Turbo Dragster",
     "model": "drags.obj",
+    "mass": 40,
+    "boundaries": [
+        0.3,
+        0.3,
+        1.8
+    ],
+    "suspension": 0.1,
+    "friction": 2,
     "rims": {
         "magnitude": 2,
         "depth": 0.3,
@@ -16,7 +24,7 @@
             "height": 16,
             "position": [
                 -28.8,
-                16,
+                -20,
                 160
             ]
         },
@@ -25,7 +33,7 @@
             "height": 16,
             "position": [
                 28.8,
-                16,
+                -20,
                 160
             ]
         },
@@ -34,7 +42,7 @@
             "height": 32,
             "position": [
                 -64,
-                -6.4,
+                0,
                 -160
             ]
         },
@@ -43,7 +51,7 @@
             "height": 32,
             "position": [
                 64,
-                -6.4,
+                0,
                 -160
             ]
         }
