@@ -5,11 +5,7 @@
         </div>
         <div>
             <p v-text="$game.vehicle.name"></p>
-            <MenuButton
-                @click="$game.state = 2"
-                text="Continue"
-                color="green"
-            />
+            <MenuButton @click="done" text="Continue" color="green" />
         </div>
         <div class="aside">
             <MenuButton text="Next >" color="blue" />
@@ -22,9 +18,18 @@ import Vue from 'vue'
 import { Component } from 'vue-property-decorator'
 
 import MenuButton from '@/components/MenuButton.vue'
+import { State } from '@/modules/web-game'
 
 @Component({ components: { MenuButton } })
 export default class Cars extends Vue {
+
+    private mounted(): void {
+        this.$game.player.pos(0.0, -1.0, 10.0);
+    }
+
+    private done(): void {
+        this.$game.state = State.STAGES;
+    }
 
 }
 </script>
