@@ -55,7 +55,7 @@ export default class Stage {
         const matrix = MatrixUtils.transformation(
             0.0, 0.0, 0.0,
             0.0, 0.0, 0.0,
-            1E+8
+            1E+6
         );
         shader.uniformMatrix4fv('model', matrix);
         this.ground.render();
@@ -65,12 +65,9 @@ export default class Stage {
     }
 
     public render(shader: ShaderProgram, camera: Camera): void {
-        shader.uniform3f('u_LightPos', 0.0, 30.0, -10.0);
+        shader.uniform3f('u_LightPos', 0.0, -100.0, 0.0);
 
         for (const [entity, model] of this.objects.entries()) {
-            camera.pos(camera.x + 0.01, -100.0, camera.z + 0.01);
-            shader.uniformMatrix4fv('view', camera.matrix);
-
             const matrix = MatrixUtils.transformation(
                 entity.x, entity.y, entity.z,
                 entity.xz, entity.zy, entity.xy
