@@ -1,8 +1,8 @@
 import { mat4 } from 'gl-matrix'
-import { World, SAPBroadphase } from 'cannon'
+import { World, SAPBroadphase, Plane, Body } from 'cannon'
 
 import Vehicle from './objects/vehicle'
-import { MatrixUtils } from './utils/utils'
+import { MatrixUtils, VecUtils } from './utils/utils'
 import ModelFactory from './factory/model-factory'
 import Stage from './objects/stage'
 import StageFactory from './factory/stage-factory'
@@ -20,6 +20,13 @@ const world = new World();
 world.broadphase = new SAPBroadphase(world);
 world.gravity.set(0, 0, -10);
 world.defaultContactMaterial.friction = 0.6;
+
+(() => {
+    const plane = new Body({ mass: 0 });
+    plane.addShape(new Plane());
+    plane.position.set(0, 0, 0);
+    world.addBody(plane);
+})();
 
 const vehicles: string[] = [
     'drags'
@@ -66,7 +73,7 @@ async function initialize() {
         const data = await (await fetch(`models/vehicles/${name}.json`)).json();
         const model = await ModelFactory.create(data['model'], 'vehicles');
 
-        const vehicle = new Vehicle(data['name'], model, data['wheels'], data['rims']);
+        const vehicle = new Vehicle(data, model);
         Vehicles.set(name, vehicle);
     }
 
@@ -131,6 +138,19 @@ function handler(game: WebGame) {
                 stage.scene(GL, shader);
                 stage.render(shader, camera);
             }
+
+            if (game.state === State.GAME) {
+                const vec = VecUtils.angles(player.quat);
+                const x = player.x + (-16 * Math.sin(vec.z));
+                const z = player.z + (-16 * Math.cos(vec.z));
+
+                camera.pos(x, player.y - 5, z);
+                camera.center(player.x, player.y, player.z);
+                shader.uniformMatrix4fv('view', camera.matrix);
+
+                game.vehicle.render(shader, player);
+            }
+
         }
 
         step();
@@ -160,6 +180,24 @@ export class WebGame {
 
     public stop(): void {
         window.cancelAnimationFrame(handle);
+    }
+
+    public initGame(): void {
+        const chassisBody = new Body({
+            mass: this.vehicle.mass
+        });
+
+        chassisBody.addShape(this.vehicle.shape);
+        player.vehicle.chassisBody = chassisBody;
+
+        this.vehicle.wheels.forEach(e =>
+            player.vehicle.addWheel(e.options)
+        );
+
+        player.vehicle.addToWorld(world);
+        world.addEventListener('postStep', () =>
+            player.update(this.vehicle.wheels)
+        );
     }
 
     public get state(): State {
