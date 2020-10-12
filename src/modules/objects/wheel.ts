@@ -1,21 +1,34 @@
 import { vec3 } from 'gl-matrix'
-import { Quaternion, Vec3 } from 'cannon'
+import { Quaternion, Vec3, IWheelInfoOptions } from 'cannon'
 
 import { ShaderProgram, Model } from '@/modules/web-game'
 import { TriangleMesh, VecUtils, MatrixUtils } from '@/modules/utils/utils'
 
+const options: IWheelInfoOptions = {
+    directionLocal: new Vec3(0, 0, -1),
+    suspensionStiffness: 20,
+    dampingRelaxation: 1,
+    dampingCompression: 1,
+    maxSuspensionForce: 10000,
+    rollInfluence: 0,
+    axleLocal: new Vec3(0, 1, 0),
+    maxSuspensionTravel: 0.3
+};
+
 export default class Wheel {
 
-    public readonly radius: number;
-
     private readonly model: Model;
+    private readonly radius: number;
+    private readonly suspension: number;
+    private readonly friction: number;
 
     public position: Vec3;
     public quat: Quaternion = new Quaternion(0.0, 0.0, 0.0, 0.0);
 
     constructor(
         { width, height, position }: { width: number, height: number, position: number[] },
-        { magnitude, depth, color }: { magnitude: number, depth: number, color: number[] }
+        { magnitude, depth, color }: { magnitude: number, depth: number, color: number[] },
+        suspension: number, friction: number
     ) {
         const resolution = 12;
         const w_width = width / 10.0;
@@ -110,7 +123,9 @@ export default class Wheel {
         this.radius = w_height / 8.0;
 
         const { [0]: x, [1]: y, [2]: z } = position.map(e => e / 100.0);
-        this.position = new Vec3(x, y, z);
+        this.position = new Vec3(z, x, y);
+        this.suspension = suspension;
+        this.friction = friction;
     }
 
     public render(shader: ShaderProgram): void {
@@ -120,16 +135,14 @@ export default class Wheel {
         this.model.render();
     }
 
-    public get x(): number {
-        return this.position.x;
-    }
-
-    public get y(): number {
-        return this.position.y;
-    }
-
-    public get z(): number {
-        return this.position.z;
+    public get options(): IWheelInfoOptions {
+        return {
+            ...options,
+            radius: this.radius,
+            suspensionRestLength: this.suspension,
+            frictionSlip: this.friction,
+            chassisConnectionPointLocal: this.position
+        };
     }
 
 }
