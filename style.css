@@ -1,0 +1,10 @@
+* {
+    user-select: none;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    margin: 0px;
+    background-color: black;
+}

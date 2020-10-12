@@ -1,0 +1,14 @@
+name(Trackless!)
+snap(-70,-70,-70)
+sky(200,200,355)
+ground(100,100,100)
+clouds(166,166,166,5,-1999)
+fadefrom(0)
+mountains(342)
+lights()
+stars()
+nlaps(-1)
+
+set(61,-600000000,-600000000,-80000000,-45)
+
+set(25,0,0,1000000000,0)pr
