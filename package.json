@@ -7,6 +7,7 @@
         "build": "vue-cli-service build"
     },
     "dependencies": {
+        "cannon": "^0.6.2",
         "core-js": "^3.6.5",
         "gl-matrix": "^3.3.0",
         "vue": "^2.6.11",
@@ -14,6 +15,7 @@
         "vue-property-decorator": "^8.4.2"
     },
     "devDependencies": {
+        "@types/cannon": "^0.1.4",
         "@types/node": "^14.11.8",
         "@vue/cli-plugin-babel": "~4.5.0",
         "@vue/cli-plugin-typescript": "~4.5.0",
