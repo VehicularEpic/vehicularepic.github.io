@@ -8,6 +8,7 @@ import Stage from './objects/stage'
 import StageFactory from './factory/stage-factory'
 import Camera from './utils/camera'
 import Player from './objects/player'
+import MapObject from './objects/map-object'
 
 var handle: number = 0;
 var GL: WebGL2RenderingContext;
@@ -43,10 +44,12 @@ const models: string[] = [
 ];
 
 const Vehicles: Map<string, Vehicle> = new Map();
-const Objects: Map<string, Model> = new Map();
+const Objects: Map<string, MapObject> = new Map();
 
 const stages: number = 71;
 const Stages: Map<number, Stage> = new Map();
+
+var zz = 0;
 
 async function initialize() {
     window.addEventListener('resize', () => {
@@ -73,14 +76,15 @@ async function initialize() {
         const data = await (await fetch(`models/vehicles/${name}.json`)).json();
         const model = await ModelFactory.create(data['model'], 'vehicles');
 
-        const vehicle = new Vehicle(data, model);
-        Vehicles.set(name, vehicle);
+        Vehicles.set(name, new Vehicle(data, model));
     }
 
     const objects = models.filter(e => !['start', 'full', 'cres'].includes(e));
     for (const name of objects) {
-        const model = await ModelFactory.create(`${name}.obj`, 'objects');
-        Objects.set(name, model);
+        const data = await (await fetch(`models/objects/${name}.json`)).json();
+        const model = await ModelFactory.create(data['model'], 'objects');
+
+        Objects.set(name, new MapObject(model));
     }
 
     for (let i = 1; i <= stages; i++) {
@@ -120,6 +124,18 @@ function handler(game: WebGame) {
             player.vehicle.setBrake(player.brake, 1);
             player.vehicle.setBrake(player.brake, 2);
             player.vehicle.setBrake(player.brake, 3);
+        }
+
+        if (player.keys['KeyZ'] && player.keys['KeyX']) {
+            zz = 0;
+        } else {
+            if (player.keys['KeyZ']) {
+                zz += 0.1;
+            }
+
+            if (player.keys['KeyX']) {
+                zz -= 0.1;
+            }
         }
 
         const now = performance.now() / 1000;
@@ -168,8 +184,10 @@ function handler(game: WebGame) {
 
             if (game.state === State.GAME) {
                 const vec = VecUtils.angles(player.quat);
-                const x = player.x + (-16 * Math.sin(vec.z));
-                const z = player.z + (-16 * Math.cos(vec.z));
+                const cxz = vec.z + zz;
+
+                const x = player.x + (-16 * Math.sin(cxz));
+                const z = player.z + (-16 * Math.cos(cxz));
 
                 camera.pos(x, player.y - 5, z);
                 camera.center(player.x, player.y, player.z);

@@ -1,8 +1,5 @@
 import { Vec3, Quaternion } from 'cannon'
 
-import { MatrixUtils } from '@/modules/utils/utils'
-import { ShaderProgram, Model } from '@/modules/web-game'
-
 export default class Entity {
 
     private _position: Vec3 = new Vec3(0.0, 0.0, 0.0);
@@ -10,13 +7,6 @@ export default class Entity {
 
     public pos(x: number, y: number, z: number): void {
         this._position.set(z, x, -y);
-    }
-
-    public render(shader: ShaderProgram, model: Model): void {
-        shader.uniformMatrix4fv('model',
-            MatrixUtils.transform(this._position, this._quat)
-        );
-        model.render();
     }
 
     public set xz(value: number) {
