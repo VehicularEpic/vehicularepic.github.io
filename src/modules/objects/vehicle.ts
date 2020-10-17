@@ -10,14 +10,16 @@ export default class Vehicle {
 
     public readonly name: string;
     public readonly mass: number;
+    public readonly force: number;
 
     private readonly model: Model;
     private readonly _wheels: Wheel[] = [];
     private readonly boundaries: number[];
 
-    constructor({ name, mass, boundaries, suspension, friction, wheels, rims }: {
+    constructor({ name, mass, force, boundaries, suspension, friction, wheels, rims }: {
         name: string,
         mass: number,
+        force: number,
         boundaries: number[],
         suspension: number,
         friction: number,
@@ -35,6 +37,7 @@ export default class Vehicle {
         this.name = name;
         this.model = model;
         this.mass = mass;
+        this.force = force;
         this.boundaries = boundaries;
         wheels.map(e => new Wheel(e, rims, suspension, friction))
             .forEach(e => this._wheels.push(e));

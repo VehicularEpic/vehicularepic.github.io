@@ -1,14 +1,14 @@
-import { RaycastVehicle, Transform } from 'cannon'
+import { Quaternion, RaycastVehicle, Transform } from 'cannon'
 
 import Entity from './entity'
 import Wheel from './wheel';
 
-const steer = 0.5;
-const force = 100;
-const brake = 2;
+const steer = 0.35;
+const brake = 100;
 
 export default class Player extends Entity {
 
+    public force: number = 0;
     public readonly keys: {
         [name: string]: boolean
     } = {};
@@ -29,12 +29,20 @@ export default class Player extends Entity {
         });
     }
 
-    public get steer(): number {
-        return steer;
+    public xy(angle: number): void {
+        const quaternion = new Quaternion(0.0, Math.sin(angle * 0.5), 0.0, Math.cos(angle * 0.5));
+        const result = this.vehicle.chassisBody.quaternion.mult(quaternion);
+        this.vehicle.chassisBody.quaternion.copy(result);
     }
 
-    public get force(): number {
-        return force;
+    public zy(angle: number): void {
+        const quaternion = new Quaternion(Math.sin(angle * 0.5), 0.0, 0.0, Math.cos(angle * 0.5));
+        const result = this.vehicle.chassisBody.quaternion.mult(quaternion);
+        this.vehicle.chassisBody.quaternion.copy(result);
+    }
+
+    public get steer(): number {
+        return steer;
     }
 
     public get brake(): number {
