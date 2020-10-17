@@ -87,7 +87,7 @@ async function initialize() {
         const data = await (await fetch(`models/objects/${name}.json`)).json();
         const model = await ModelFactory.create(data['model'], 'objects');
 
-        Objects.set(name, new MapObject(model));
+        Objects.set(name, new MapObject(model, data));
     }
 
     for (let i = 1; i <= stages; i++) {
@@ -230,6 +230,7 @@ export class WebGame {
             mass: this.vehicle.mass
         });
 
+        player.force = this.vehicle.force;
         chassisBody.addShape(this.vehicle.shape);
         player.vehicle.chassisBody = chassisBody;
 
@@ -238,6 +239,18 @@ export class WebGame {
         );
 
         player.vehicle.addToWorld(world);
+        const stage = Stages.get(this.stage) as Stage;
+        for (const [entity, object] of stage.entities) {
+            if (object.shape !== undefined) {
+                var tetraBody = new Body({ mass: 0 })
+                tetraBody.addShape(object.shape);
+
+                tetraBody.position.copy(entity.position);
+                tetraBody.quaternion.copy(entity.quat);
+                world.addBody(tetraBody);
+            }
+        }
+
         world.addEventListener('postStep', () =>
             player.update(this.vehicle.wheels)
         );
