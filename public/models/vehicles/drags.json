@@ -2,6 +2,7 @@
     "name": "Turbo Dragster",
     "model": "drags.obj",
     "mass": 40,
+    "force": 100,
     "boundaries": [
         0.3,
         0.3,

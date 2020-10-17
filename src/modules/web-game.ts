@@ -33,7 +33,7 @@ world.defaultContactMaterial.frictionEquationStiffness = 1E+5;
 })();
 
 const vehicles: string[] = [
-    'drags'
+    'destroy', 'drags'
 ];
 
 const models: string[] = [

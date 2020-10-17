@@ -1,0 +1,60 @@
+{
+    "model": "destroy.obj",
+    "name": "The Destroyer",
+    "mass": 1500,
+    "force": 6000,
+    "boundaries": [
+        0.6,
+        0.3,
+        1.9
+    ],
+    "suspension": 0.1,
+    "friction": 3,
+    "rims": {
+        "magnitude": 2,
+        "depth": 12,
+        "color": [
+            0.2,
+            0.2,
+            0.2
+        ]
+    },
+    "wheels": [
+        {
+            "width": 68,
+            "height": 42.5,
+            "position": [
+                -85,
+                0,
+                170
+            ]
+        },
+        {
+            "width": -68,
+            "height": 42.5,
+            "position": [
+                85,
+                0,
+                170
+            ]
+        },
+        {
+            "width": 68,
+            "height": 42.5,
+            "position": [
+                -119,
+                0,
+                -170
+            ]
+        },
+        {
+            "width": -68,
+            "height": 42.5,
+            "position": [
+                119,
+                0,
+                -170
+            ]
+        }
+    ]
+}
