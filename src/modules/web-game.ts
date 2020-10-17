@@ -21,6 +21,9 @@ const world = new World();
 world.broadphase = new SAPBroadphase(world);
 world.gravity.set(0, 0, -10);
 world.defaultContactMaterial.friction = 0.6;
+world.defaultContactMaterial.restitution = 0;
+world.defaultContactMaterial.contactEquationStiffness = 1E+6;
+world.defaultContactMaterial.frictionEquationStiffness = 1E+5;
 
 (() => {
     const plane = new Body({ mass: 0 });
@@ -138,13 +141,8 @@ function handler(game: WebGame) {
             }
         }
 
-        const now = performance.now() / 1000;
-        if (lastCallTime === 0) {
-            world.step(time);
-            return lastCallTime = now;
-        }
-
-        world.step(time, now - lastCallTime, 3);
+        const now = performance.now() / 1000.0;
+        world.step(time, now - lastCallTime, 2);
     }
 
     function update() {

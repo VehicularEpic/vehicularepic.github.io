@@ -6,12 +6,14 @@ import { TriangleMesh, VecUtils, MatrixUtils } from '@/modules/utils/utils'
 
 const options: IWheelInfoOptions = {
     directionLocal: new Vec3(0, 0, -1),
-    suspensionStiffness: 20,
-    dampingRelaxation: 1,
-    dampingCompression: 1,
-    maxSuspensionForce: 10000,
-    rollInfluence: 0,
+    suspensionStiffness: 40,
+    dampingRelaxation: 2.3,
+    dampingCompression: 2.5,
+    maxSuspensionForce: 100000,
+    rollInfluence: 0.1,
     axleLocal: new Vec3(0, 1, 0),
+    customSlidingRotationalSpeed: -30,
+    useCustomSlidingRotationalSpeed: true,
     maxSuspensionTravel: 0.3
 };
 
