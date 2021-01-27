@@ -1,0 +1,2 @@
+include/**/*.h linguist-generated=true
+src/native/gl/gl.c linguist-generated=true
