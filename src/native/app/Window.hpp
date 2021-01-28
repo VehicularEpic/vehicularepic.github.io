@@ -19,12 +19,25 @@ private:
 
 public:
     Window(int width, int height);
-    ~Window();
+    virtual ~Window();
 
     void update();
 
-    int getWidth() { return width; };
-    int getHeight() { return height; };
+    int getWidth() {
+        return width;
+    }
+
+    void setWidth(int width) {
+        this->width = width;
+    }
+
+    int getHeight() {
+        return height;
+    }
+
+    void setHeight(int height) {
+        this->height = height;
+    }
 };
 
 #endif
