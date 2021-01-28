@@ -17,7 +17,7 @@ build: $(SOURCES)
 
 clean:
 	@rm -rf build
-	@rm public/index.js
-	@rm public/index.wasm
+	@rm -f public/index.js
+	@rm -f public/index.wasm
 
 .PHONY: clean
