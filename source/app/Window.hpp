@@ -8,6 +8,7 @@
 #include <GLFW/glfw3.h>
 #include <glad/gl.h>
 
+#define __EMSCRIPTEN__ 1
 #include <emscripten/emscripten.h>
 
 class Window {
@@ -22,21 +23,14 @@ public:
     virtual ~Window();
 
     void update();
+    void resize(int width, int height);
 
-    int getWidth() {
+    int getWidth() const {
         return width;
     }
 
-    void setWidth(int width) {
-        this->width = width;
-    }
-
-    int getHeight() {
+    int getHeight() const {
         return height;
-    }
-
-    void setHeight(int height) {
-        this->height = height;
     }
 };
 

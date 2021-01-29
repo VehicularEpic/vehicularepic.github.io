@@ -4,9 +4,6 @@ package-lock.json
 
 /dist
 /build
-/public/index.js
-/public/index.wasm
-
 
 # local env files
 .env.local

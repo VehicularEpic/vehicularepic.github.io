@@ -1,12 +1,12 @@
 #include "Shader.hpp"
 
-static GLuint compile(GLenum type, const char* source) {
+static GLuint compile(GLuint program, GLenum type, const char* source) {
     GLint status;
     GLuint shader = glCreateShader(type);
 
     glShaderSource(shader, 1, &source, NULL);
-    glCompileShader(shader);
 
+    glCompileShader(shader);
     glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
 
     if (status == GL_FALSE) {
@@ -19,19 +19,29 @@ static GLuint compile(GLenum type, const char* source) {
         fprintf(stderr, "Error compiling shader: %s\n", description);
     }
 
+    glAttachShader(program, shader);
     return shader;
 }
 
 Shader::Shader(const char* vertex_shader, const char* fragment_shader) {
-    GLuint vertex = compile(GL_VERTEX_SHADER, vertex_shader);
-    GLuint fragment = compile(GL_FRAGMENT_SHADER, fragment_shader);
-
+    GLint status;
     this->program = glCreateProgram();
-    glAttachShader(this->program, vertex);
-    glAttachShader(this->program, fragment);
+
+    GLuint vertex = compile(this->program, GL_VERTEX_SHADER, vertex_shader);
+    GLuint fragment = compile(this->program, GL_FRAGMENT_SHADER, fragment_shader);
 
     glLinkProgram(this->program);
-    glValidateProgram(this->program);
+    glGetProgramiv(this->program, GL_LINK_STATUS, &status);
+
+    if (status == GL_FALSE) {
+        GLint length;
+        glGetProgramiv(this->program, GL_INFO_LOG_LENGTH, &length);
+
+        GLchar description[length];
+        glGetProgramInfoLog(this->program, length, NULL, description);
+
+        fprintf(stderr, "Error linking program: %s\n", description);
+    }
 
     glDeleteShader(vertex);
     glDeleteShader(fragment);
