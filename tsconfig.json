@@ -29,11 +29,11 @@
         ]
     },
     "include": [
-        "*.ts",
-        "*.tsx",
         "src/**/*.ts",
         "src/**/*.tsx",
-        "src/**/*.vue"
+        "src/**/*.vue",
+        "types/**/*.ts",
+        "types/**/*.tsx"
     ],
     "exclude": [
         "node_modules"
