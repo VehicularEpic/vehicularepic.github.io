@@ -4,11 +4,13 @@
 #include <stdio.h>
 #include <glad/gl.h>
 
+#include <string>
+
 class Shader {
 private:
     GLuint program;
 public:
-    Shader(const char* vertex_shader, const char* fragment_shader);
+    Shader(std::string vertex_shader, std::string fragment_shader);
     virtual ~Shader();
 
     void _int(GLint location, GLint value);
@@ -18,7 +20,9 @@ public:
     void _vec4f(GLint location, GLfloat x, GLfloat y, GLfloat z, GLfloat w);
     void _matrix4f(GLint location, const GLfloat* value);
 
-    GLuint getProgram() { return program; }
+    GLuint getProgram() const {
+        return program;
+    }
 };
 
 #endif

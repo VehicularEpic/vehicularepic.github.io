@@ -23,12 +23,12 @@ static GLuint compile(GLuint program, GLenum type, const char* source) {
     return shader;
 }
 
-Shader::Shader(const char* vertex_shader, const char* fragment_shader) {
+Shader::Shader(std::string vertex_shader, std::string fragment_shader) {
     GLint status;
     this->program = glCreateProgram();
 
-    GLuint vertex = compile(this->program, GL_VERTEX_SHADER, vertex_shader);
-    GLuint fragment = compile(this->program, GL_FRAGMENT_SHADER, fragment_shader);
+    GLuint vertex = compile(this->program, GL_VERTEX_SHADER, vertex_shader.c_str());
+    GLuint fragment = compile(this->program, GL_FRAGMENT_SHADER, fragment_shader.c_str());
 
     glLinkProgram(this->program);
     glGetProgramiv(this->program, GL_LINK_STATUS, &status);
