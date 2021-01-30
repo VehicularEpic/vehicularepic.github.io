@@ -8,9 +8,6 @@
 #include <GLFW/glfw3.h>
 #include <glad/gl.h>
 
-#define __EMSCRIPTEN__ 1
-#include <emscripten/emscripten.h>
-
 class Window {
 private:
     int width;

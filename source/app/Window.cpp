@@ -8,9 +8,10 @@ Window::Window(int width, int height) {
     glfwSetErrorCallback(error_callback);
 
     if (!glfwInit())
-        emscripten_force_exit(EXIT_FAILURE);
+        exit(EXIT_FAILURE);
 
     glfwDefaultWindowHints();
+    glfwWindowHint(GLFW_SAMPLES, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -19,7 +20,7 @@ Window::Window(int width, int height) {
 
     if (!this->window) {
         glfwTerminate();
-        emscripten_force_exit(EXIT_FAILURE);
+        exit(EXIT_FAILURE);
     }
 
     glfwMakeContextCurrent(this->window);
@@ -31,6 +32,7 @@ Window::Window(int width, int height) {
 
 Window::~Window() {
     glfwDestroyWindow(this->window);
+    glfwTerminate();
 }
 
 void Window::update() {
