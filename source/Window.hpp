@@ -1,12 +1,12 @@
 #ifndef WINDOW_HPP
 #define WINDOW_HPP
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #include <glad/gl.h>
+
+#include <cstdio>
+#include <cstdlib>
 
 class Window {
 private:
@@ -20,14 +20,21 @@ public:
     virtual ~Window();
 
     void update();
-    void resize(int width, int height);
 
     int getWidth() const {
         return width;
     }
 
+    void setWidth(int width) {
+        this->width = width;
+    }
+
     int getHeight() const {
         return height;
+    }
+
+    void setHeight(int height) {
+        this->height = height;
     }
 };
 

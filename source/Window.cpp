@@ -4,7 +4,7 @@ static void error_callback(int error, const char* description) {
     fprintf(stderr, "Error: %s\n", description);
 }
 
-Window::Window(int width, int height) {
+Window::Window(int width, int height) : width(width), height(height) {
     glfwSetErrorCallback(error_callback);
 
     if (!glfwInit())
@@ -26,8 +26,6 @@ Window::Window(int width, int height) {
     glfwMakeContextCurrent(this->window);
     gladLoadGL(glfwGetProcAddress);
     glfwSwapInterval(1);
-
-    this->resize(width, height);
 }
 
 Window::~Window() {
@@ -38,10 +36,4 @@ Window::~Window() {
 void Window::update() {
     glfwSwapBuffers(this->window);
     glfwPollEvents();
-}
-
-void Window::resize(int width, int height) {
-    glViewport(0, 0, width, height);
-    this->width = width;
-    this->height = height;
 }
